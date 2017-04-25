@@ -1,0 +1,29 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="imgtools:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/imgtools_jar</output-path>
+    <root id="archive" name="client-id-card-auth.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="client-id-card-auth" />
+      <element id="extracted-dir" path="E:/https-jar/commons-codec-1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpcore-4.4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/commons-beanutils-1.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpclient-osgi-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/commons-collections-3.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/fastjson-1.2.23.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpmime-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/fluent-hc-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/json-lib-2.4-jdk15.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpclient-4.3.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpclient-cache-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/ezmorph-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpcore-osgi-4.4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpasyncclient-4.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/httpcore-nio-4.4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/commons-lang-2.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/commons-logging-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="E:/https-jar/commons-httpclient-3.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
