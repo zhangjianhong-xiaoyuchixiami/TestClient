@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/client-id-card-auth.iml" filepath="$PROJECT_DIR$/client-id-card-auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TestClient.iml" filepath="$PROJECT_DIR$/TestClient.iml" />
     </modules>
   </component>
 </project>

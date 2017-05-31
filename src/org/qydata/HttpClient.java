@@ -57,10 +57,6 @@ public class HttpClient {
 			result += new String(buff, 0, length);
 		}
 		httpclient.getConnectionManager().shutdown();
-		System.out.println("--------------------------------------");
-		System.out.println("Response Code = " + response.getStatusLine().getStatusCode());
-		System.out.println("Response content: " + result);
-		System.out.println("--------------------------------------");
-		return "{\"code\":0,\"message\":\"成功\",\"result\":{\"resultCode\":1}}";
+		return result;
 	}
 }

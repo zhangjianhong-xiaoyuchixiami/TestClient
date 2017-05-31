@@ -20,11 +20,11 @@ public class ConcurrentDemo1 {
 		// 待验证的身份证号
 		requestData.setIdNo(certNo);
 		// 账号
-		requestData.setAuthId("qydata_test");
+		requestData.setAuthId("qydata03");
 		requestData.setTs(System.currentTimeMillis());
 		requestData.setReqId(HashHelper.reqId());
 		// 密码
-		requestData.setSign(HashHelper.md5(requestData.getAuthId() + "f26d89cf8715403e81cfa72170083723"
+		requestData.setSign(HashHelper.md5(requestData.getAuthId() + "a54cc70444ea4618ad8d586194ba1572"
 				+ requestData.getReqId() + requestData.getTs()));
 		String result = ConcurrentDemo1.getData(requestData);
 		//解析返回结果
@@ -33,7 +33,7 @@ public class ConcurrentDemo1 {
 	}
 
 	public static String getData(RequestData requestData) {
-		final String uri = "https://apitest.qydata.org:9000/id/verify/2f";
+		final String uri = "https://api.qydata.org:9000/id/query/photo";
 		String json = JSON.toJSONString(requestData);
 		try {
 			return HttpClient.doPostSSL(uri, json);

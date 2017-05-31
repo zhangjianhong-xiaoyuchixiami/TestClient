@@ -12,11 +12,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyFrame extends JFrame {
+
 
 	public static void main(String[] args) {
 		MyFrame mf = new MyFrame("工具");
@@ -35,7 +36,7 @@ public class MyFrame extends JFrame {
 
 	// Param
 	private File selectFile;
-	private List<String> rowsTextList = new ArrayList<String>();
+	private java.util.List<String> rowsTextList = new ArrayList<String>();
 	private Map<String, String> checkMap = new HashMap<String, String>();
 	boolean fileIsOk = false;
 
@@ -101,9 +102,10 @@ public class MyFrame extends JFrame {
 		});
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// D8-CB-8A-B0-28-26
+
 				String myMac = "";
 				String mustMac = "9C-5C-8E-7A-AA-9B";
+				//String mustMac = "80-A5-89-6F-EA-E9";
 				try {
 					InetAddress ia = InetAddress.getLocalHost();// 获取本地IP对象
 					System.out.println(ia);
@@ -113,7 +115,7 @@ public class MyFrame extends JFrame {
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
-				if (!mustMac.equals(myMac) && !myMac.equals("80-FA-5B-33-73-5B")) {
+				if (!mustMac.equals(myMac)) {
 					show.append("MAC地址认证失败！\r\n");
 					show.append("您的MAC地址为"+myMac+"\r\n");
 					return;
@@ -136,170 +138,128 @@ public class MyFrame extends JFrame {
 	}
 
 	protected void run() throws Exception {
-		String dir = openDia.getDirectory();
-		String pass = "c:/imgtools/mb/pass.jpg";
-		String no_pass = "c:/imgtools/mb/no_pass.jpg";
-		String xh;
-		String errorList = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		for (int i = 0; i < rowsTextList.size(); i++) {
-			Thread.sleep(100);
-			String[] rs = rowsTextList.get(i).split(",");
-			Person p = getPerson(rs);
-			xh = p.getXh();
+		String dir = this.openDia.getDirectory();
+		String zmMb = "c:/imgtools/mb/amb_zm.jpg";
+		String bmMb = "c:/imgtools/mb/amb_bm.jpg";
+		String dmAdd = "c:/imgtools/mb/amb_dm.png";
+		String dmMz = "c:/imgtools/mb/amb_dm1.png";
 
-			// 生成审核图
+
+		for(int i = 0; i < this.rowsTextList.size(); ++i) {
+			Thread.sleep(100L);
+			String[] rs = ((String)this.rowsTextList.get(i)).split(",");
+			Person p = this.getPserson(rs);
+			String xh = p.getXh();
 			JSONObject jo = ConcurrentDemo1.postData(p.getName(), p.getIdcard());
 			String errorCode = jo.getString("code");
-			// 0表示成功
-			if (errorCode.equals("0")) {
-				// 不加密的取法
-				JSONObject dataJo = jo.getJSONObject("result");
-				if (dataJo.has("resultCode")) {
-					String result = dataJo.getString("resultCode");
-					if (result.equals("1")) {
-						show.append("第" + xh + "行 " + p.getIdcard() + " 匹配！" + "\r\n");
+			if("0".equals(errorCode)) {
+				JSONObject jzjzjzjz = jo.getJSONObject("result");
+				if(jzjzjzjz.has("resultCode")) {
+					String pictureFileName = jzjzjzjz.getString("resultCode");
+					if(pictureFileName.equals("1")) {
+						this.show.append("第" + xh + "行 " + p.getIdcard() + " 认证成功！\r\n");
+						String certPicture = jzjzjzjz.getString("photo");
+						short var19 = 428;
+						pictureFileName = "photo_" + xh + ".jpg";
 						String certFileName = p.getIdcard() + ".jpg";
-						ImgUtils.baseStrToImageFile(dir, Txttext.txt2String(new File(dir+"mb/pass.txt")), certFileName);
-						WaterImg.pressText(p.getIdcard(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 595);
-						WaterImg.pressText(p.getName(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 540);
-						WaterImg.pressText(p.getSex(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 480);
-						WaterImg.pressText(p.getBirthdayYear()+""+p.getBirthdayMonth()+""+p.getBirthdayDay(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 420);
-						if (p.getAddress() != null) {
-							WaterImg.pressText(p.getAddress(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 360);
-						}
-						WaterImg.pressText("一致", dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 300);
-						WaterImg.pressText(sdf.format(new Date()), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 240);
-					}else if (result.equals("-1")){
-						show.append("第" + xh + "行 " + p.getIdcard() + " 无对应身份证记录！" + "\r\n");
-						String certFileName = p.getIdcard() + ".jpg";
-						ImgUtils.baseStrToImageFile(dir, Txttext.txt2String(new File(dir+"mb/no_pass.txt")), certFileName);
-						WaterImg.pressText(p.getIdcard(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 595);
-						WaterImg.pressText(p.getName(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 540);
-						WaterImg.pressText(p.getSex(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 480);
-						WaterImg.pressText(p.getBirthdayYear()+""+p.getBirthdayMonth()+""+p.getBirthdayDay(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 420);
-						if (p.getAddress() != null) {
-							WaterImg.pressText(p.getAddress(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 360);
-						}
-						WaterImg.pressText("无对应身份证记录", dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 300);
-						WaterImg.pressText(sdf.format(new Date()), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 240);
-					}else if (result.equals("4")){
-						show.append("第" + xh + "行 " + p.getIdcard() + " 不匹配！" + "\r\n");
-						String certFileName = p.getIdcard() + ".jpg";
-						ImgUtils.baseStrToImageFile(dir, Txttext.txt2String(new File(dir+"mb/no_pass.txt")), certFileName);
-						WaterImg.pressText(p.getIdcard(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 595);
-						WaterImg.pressText(p.getName(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 540);
-						WaterImg.pressText(p.getSex(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 480);
-						WaterImg.pressText(p.getBirthdayYear()+""+p.getBirthdayMonth()+""+p.getBirthdayDay(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 420);
-						if (p.getAddress() != null) {
-							WaterImg.pressText(p.getAddress(), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 360);
-						}
-						WaterImg.pressText("不匹配", dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 300);
-						WaterImg.pressText(sdf.format(new Date()), dir + certFileName, "华文细黑", Font.BOLD, Color.black, 24, 500, 240);
-					}else {
-						show.append("第" + xh + "行错误\r\n");
-						continue;
+						ImgUtils.baseStrToImageFile(dir, certPicture, pictureFileName);
+						ImageOne.setAlpha(dir + pictureFileName);
+						WaterImg.pressImage(dir + pictureFileName, zmMb, dir + certFileName, 60, 150 + var19);
+						WaterImg.pressText(p.getName(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 500, 337 + var19);
+						WaterImg.pressText(p.getSex(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 500, 287 + var19);
+						WaterImg.pressImage(dmMz, dir + certFileName, dir + certFileName, 350, 287 + var19);
+						WaterImg.pressText(p.getBirthdayYear(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 500, 237 + var19);
+						WaterImg.pressText(p.getBirthdayMonth(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 400, 237 + var19);
+						WaterImg.pressText(p.getBirthdayDay(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 350, 237 + var19);
+						WaterImg.pressText(p.getAddress(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 500, 184 + var19);
+						WaterImg.pressImage(dmAdd, dir + certFileName, dir + certFileName, 260, 154 + var19);
+						WaterImg.pressText("仅为海关清关使用", dir + certFileName, dir + certFileName, "华文细黑", 1, Color.red, 18, 500, 84 + var19);
+						WaterImg.pressText(p.getIdcard(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 30, 400, 40 + var19);
+						WaterImg.pressText(p.getAddress(), dir + certFileName, dir + certFileName, "华文细黑", 1, Color.black, 18, 380, 100);
+						WaterImg.pressImage(dmAdd, dir + certFileName, dir + certFileName, 145, 50);
+						this.show.append("*************************************\r\n");
+						this.show.append("******序号：" + xh + " 制作完成！\r\n");
+						this.show.append("*************************************\r\n");
+					} else {
+						this.show.append("第" + xh + "行，认证失败！身份证号："+ p.getIdcard() +"姓名："+ p.getName() +"\r\n");
 					}
-				} else {
-					show.append("第" + xh + "行错误\r\n");
-					continue;
 				}
-			} else {
-				show.append("第" + xh + "行错误\r\n");
-				continue;
 			}
-			show.append("*************************************\r\n");
-			show.append("******序号：" + xh + " 制作完成！\r\n");
-			show.append("*************************************\r\n");
+			this.show.append("第" + xh + "行，请求失败！状态码code=："+ errorCode +"\r\n");
 		}
-		show.append(errorList);
 	}
 
-	/**
-	 * 通过身份证号获取信息
-	 * @param rs
-	 * @return
-	 */
-	private Person getPerson(String[] rs) {
+	private Person getPserson(String[] rs) {
 		Person p = new Person();
 		p.setXh(rs[0]);
 		p.setIdcard(rs[1]);
 		p.setName(rs[2]);
-		// address
-		p.setAddress(CertAddressList.addMap.get(rs[1].substring(0, 6)));
-		// sex
+		p.setAddress((String)CertAddressList.addMap.get(rs[1].substring(0, 6)));
 		String rs17 = rs[1].substring(16, 17);
-		if ("13579".indexOf(rs17) > -1) {
+		if("13579".indexOf(rs17) > -1) {
 			p.setSex("男");
 		} else {
 			p.setSex("女");
 		}
-		// birthday
 		String rs7_13 = rs[1].substring(6, 14);
 		p.setBirthdayYear(rs7_13.substring(0, 4));
-		p.setBirthdayMonth(Integer.parseInt(rs7_13.substring(4, 6)) + "");
-		p.setBirthdayDay(Integer.parseInt(rs7_13.substring(6, 8)) + "");
+		p.setBirthdayMonth(rs7_13.substring(4, 6));
+		p.setBirthdayDay(rs7_13.substring(6, 8));
 		return p;
 	}
 
-	/**
-	 * 检查输入文本
-	 * @return
-	 * @throws InterruptedException
-	 */
 	public boolean checkTextIsOk() throws InterruptedException {
 		IdcardValidator iv = new IdcardValidator();
-		String r;
-		String xh;
-		String cn;
-		String un;
-		Map<String, String> xhMap = new HashMap<String, String>();
+		HashMap xhMap = new HashMap();
 		boolean allIsOk = true;
-		int k;
-		for (int i = 0; i < rowsTextList.size(); i++) {
-			Thread.sleep(50);
-			k = i + 1;
-			show.append("正在检查第" + k + "行...\r\n");
-			r = rowsTextList.get(i);
+
+		for(int t = 0; t < this.rowsTextList.size(); ++t) {
+			Thread.sleep(50L);
+			int k = t + 1;
+			this.show.append("正在检查第" + k + "行...\r\n");
+			String r = (String)this.rowsTextList.get(t);
 			String[] rs = r.split(",", -1);
-			show.append("数据格式是否正常...\r\n");
-			if (rs.length != 3) {
-				show.append("第" + k + "行，应至少有两个逗号分隔数据！\r\n");
+			this.show.append("数据格式是否正常...\r\n");
+			if(rs.length != 3) {
+				this.show.append("第" + k + "行，应至少有两个逗号分隔数据！\r\n");
 				allIsOk = false;
 				return false;
 			}
 
-			xh = rs[0];
-			cn = rs[1];
-			un = rs[2];
-			show.append("数据内容是否非空...\r\n");
-			if (xh.equals("") || cn.equals("") || un.equals("")) {
-				show.append("第" + k + "行，序号，身份证号，姓名均不可以为空！\r\n");
+			String xh = rs[0];
+			String cn = rs[1];
+			String un = rs[2];
+			this.show.append("数据内容是否非空...\r\n");
+			if(xh.equals("") || cn.equals("") || un.equals("")) {
+				this.show.append("第" + k + "行，序号，身份证号，姓名均不可以为空！\r\n");
 				allIsOk = false;
 			}
 
-			show.append("数据序号是否重复...\r\n");
-			if (xhMap.get(xh) != null) {
-				show.append("第" + k + "行，序号：" + xh + "重复出现，请仔细检查！\r\n");
+			this.show.append("数据序号是否重复...\r\n");
+			if(xhMap.get(xh) != null) {
+				this.show.append("第" + k + "行，序号：" + xh + "重复出现，请仔细检查！\r\n");
 				allIsOk = false;
 			} else {
 				xhMap.put(xh, xh);
 			}
 
-			show.append("身份证格式是否正确...\r\n");
-			if (!iv.isValidatedAllIdcard(cn)) {
-				show.append("第" + k + "行，身份证号：" + cn + "不是合法的身份证号，请仔细检查！！\r\n");
+			this.show.append("身份证格式是否正确...\r\n");
+			if(!iv.isValidatedAllIdcard(cn)) {
+				this.show.append("第" + k + "行，身份证号：" + cn + "不是合法的身份证号，请仔细检查！！\r\n");
 				allIsOk = false;
 			}
-			show.append("\r\n");
-			show.paintImmediately(show.getBounds());
+
+			this.show.append("\r\n");
+			this.show.paintImmediately(this.show.getBounds());
 		}
-		if (!allIsOk) {
-			String t = show.getText();
-			show.setText("文件内容异常：\r\n" + t + "\r\n");
+
+		if(!allIsOk) {
+			String var11 = this.show.getText();
+			this.show.setText("文件内容异常：\r\n" + var11 + "\r\n");
 		} else {
-			show.append("文件内容正常\r\n");
+			this.show.append("文件内容正常\r\n");
 		}
+
 		return allIsOk;
 	}
 }
