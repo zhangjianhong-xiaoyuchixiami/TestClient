@@ -20,11 +20,11 @@ public class ConcurrentDemo1 {
 		// 待验证的身份证号
 		requestData.setIdNo(certNo);
 		// 账号
-		requestData.setAuthId("qydata03");
+		requestData.setAuthId("jmljkj");
 		requestData.setTs(System.currentTimeMillis());
 		requestData.setReqId(HashHelper.reqId());
 		// 密码
-		requestData.setSign(HashHelper.md5(requestData.getAuthId() + "a54cc70444ea4618ad8d586194ba1572"
+		requestData.setSign(HashHelper.md5(requestData.getAuthId() + "12a0240e5a5e474aa6863b0d84387a1e"
 				+ requestData.getReqId() + requestData.getTs()));
 		String result = ConcurrentDemo1.getData(requestData);
 		//解析返回结果

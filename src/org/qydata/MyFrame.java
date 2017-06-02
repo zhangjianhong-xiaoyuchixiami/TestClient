@@ -6,14 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyFrame extends JFrame {
@@ -104,8 +102,8 @@ public class MyFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				String myMac = "";
-				String mustMac = "9C-5C-8E-7A-AA-9B";
-				//String mustMac = "80-A5-89-6F-EA-E9";
+				//String mustMac = "9C-5C-8E-7A-AA-9B";
+				String mustMac = "80-A5-89-6F-EA-E9";
 				try {
 					InetAddress ia = InetAddress.getLocalHost();// 获取本地IP对象
 					System.out.println(ia);
@@ -144,6 +142,7 @@ public class MyFrame extends JFrame {
 		String dmAdd = "c:/imgtools/mb/amb_dm.png";
 		String dmMz = "c:/imgtools/mb/amb_dm1.png";
 
+		List<String> faildata = new ArrayList<>();
 
 		for(int i = 0; i < this.rowsTextList.size(); ++i) {
 			Thread.sleep(100L);
@@ -152,13 +151,14 @@ public class MyFrame extends JFrame {
 			String xh = p.getXh();
 			JSONObject jo = ConcurrentDemo1.postData(p.getName(), p.getIdcard());
 			String errorCode = jo.getString("code");
+			String message = jo.getString("message");
 			if("0".equals(errorCode)) {
-				JSONObject jzjzjzjz = jo.getJSONObject("result");
-				if(jzjzjzjz.has("resultCode")) {
-					String pictureFileName = jzjzjzjz.getString("resultCode");
+				JSONObject jsonObject = jo.getJSONObject("result");
+				if(jsonObject.has("resultCode")) {
+					String pictureFileName = jsonObject.getString("resultCode");
 					if(pictureFileName.equals("1")) {
 						this.show.append("第" + xh + "行 " + p.getIdcard() + " 认证成功！\r\n");
-						String certPicture = jzjzjzjz.getString("photo");
+						String certPicture = jsonObject.getString("photo");
 						short var19 = 428;
 						pictureFileName = "photo_" + xh + ".jpg";
 						String certFileName = p.getIdcard() + ".jpg";
@@ -182,11 +182,31 @@ public class MyFrame extends JFrame {
 						this.show.append("*************************************\r\n");
 					} else {
 						this.show.append("第" + xh + "行，认证失败！身份证号："+ p.getIdcard() +"姓名："+ p.getName() +"\r\n");
+						String authFailData = xh+","+p.getIdcard()+","+p.getName()+";"+"提示：认证失败！";
+						faildata.add(authFailData);
 					}
 				}
+			}else {
+				this.show.append("第" + xh + "行，请求失败！状态码code=："+ errorCode +"提示："+ message +"\r\n");
+				String requestFailData = xh+","+p.getIdcard()+","+p.getName()+";"+"提示：" + message;
+				faildata.add(requestFailData);
 			}
-			this.show.append("第" + xh + "行，请求失败！状态码code=："+ errorCode +"\r\n");
 		}
+
+		File file = new File("C:\\imgtools\\failInfo.txt");
+		if(file.exists()) {
+			file.delete();
+		}
+		file.getParentFile().mkdirs();
+		file.createNewFile();
+		FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		if (faildata != null){
+			for (int i = 0; i < faildata.size() ; i++) {
+				bw.write(faildata.get(i) + "\r\n");
+			}
+		}
+		bw.close();
 	}
 
 	private Person getPserson(String[] rs) {
